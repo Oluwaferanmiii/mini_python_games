@@ -12,7 +12,9 @@ fortunes = [
     "The compiler of fate has no backspace key.",
     "Your destiny has been deprecated.",
     "Documentation is the real MVP.",
-    "Commit early, commit often, regret always."
+    "Commit early, commit often, regret always.",
+    "Go outside and touch Grass.",
+    "Karma point minus 1"
 ]
 
 # Function to display random fortune

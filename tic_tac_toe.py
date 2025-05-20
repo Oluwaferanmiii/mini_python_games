@@ -3,26 +3,44 @@ from tkinter import messagebox
 
 
 class TicTacToe:
-    """
-    TicTacToe Class 
-    """
-
     def __init__(self, root):
         self.root = root
         self.root.title("Tic Tac Toe")
 
-        self.current_player = "X"
+        self.player_symbol = None
+        self.opponent_symbol = None
+        self.current_player = None
         self.board = [""] * 9
         self.buttons = []
 
-        self.status_label = tk.Label(
-            root, text="Player X's turn", font=('Arial', 14))
+        self.status_label = tk.Label(root, text="", font=('Arial', 14))
         self.status_label.grid(row=0, column=0, columnspan=3, pady=10)
 
         self.create_board()
         self.reset_button = tk.Button(
             root, text="Reset", command=self.reset_game, font=('Arial', 12))
         self.reset_button.grid(row=4, column=0, columnspan=3, pady=10)
+
+        self.choose_symbol_popup()
+
+    def choose_symbol_popup(self):
+        popup = tk.Toplevel(self.root)
+        popup.title("Choose Your Symbol")
+        popup.geometry("250x100")
+        tk.Label(popup, text="Player 1: Choose your symbol").pack(pady=10)
+
+        def choose(symbol):
+            self.player_symbol = symbol
+            self.opponent_symbol = "O" if symbol == "X" else "X"
+            self.current_player = self.player_symbol
+            self.status_label.config(
+                text=f"Player {self.current_player}'s turn")
+            popup.destroy()
+
+        tk.Button(popup, text="X", width=10, command=lambda: choose(
+            "X")).pack(side=tk.LEFT, padx=20)
+        tk.Button(popup, text="O", width=10, command=lambda: choose(
+            "O")).pack(side=tk.RIGHT, padx=20)
 
     def create_board(self):
         for i in range(9):
@@ -32,6 +50,9 @@ class TicTacToe:
             self.buttons.append(button)
 
     def make_move(self, index):
+        if self.current_player is None:
+            return  # Wait until player chooses symbol
+
         if self.board[index] == "":
             self.board[index] = self.current_player
             self.buttons[index].config(text=self.current_player)
@@ -45,7 +66,7 @@ class TicTacToe:
                 self.status_label.config(text="It's a draw!")
                 messagebox.showinfo("Game Over", "It's a draw!")
             else:
-                self.current_player = "O" if self.current_player == "X" else "X"
+                self.current_player = self.player_symbol if self.current_player == self.opponent_symbol else self.opponent_symbol
                 self.status_label.config(
                     text=f"Player {self.current_player}'s turn")
 
@@ -66,14 +87,14 @@ class TicTacToe:
 
     def reset_game(self):
         self.board = [""] * 9
-        self.current_player = "X"
+        self.current_player = self.player_symbol
         for button in self.buttons:
             button.config(text="", state=tk.NORMAL)
-        self.status_label.config(text="Player X's turn")
+        self.status_label.config(text=f"Player {self.current_player}'s turn")
 
 
-# Run the app
+# Launch game
 if __name__ == "__main__":
-    root = tk.Tk()
-    game = TicTacToe(root)
-    root.mainloop()
+    app = tk.Tk()
+    game = TicTacToe(app)
+    app.mainloop()
